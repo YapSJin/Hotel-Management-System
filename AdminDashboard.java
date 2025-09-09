@@ -2,75 +2,68 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-
+import java.util.Scanner;
 /**
  *
  * @author USER
  */
 // Admin Dashboard class
 public class AdminDashboard {
-    private Hotel hotel;
-    private EmployeeManager employeeManager;
-    private BookingManager bookingManager;
-    private PaymentCalculator paymentCalculator;
-    
+    private final Hotel hotel;
+    private final EmployeeManager employeeManager;
+    private final BookingManager bookingManager;
+    private final PaymentCalculator paymentCalculator;
+
     public AdminDashboard(Hotel hotel) {
         this.hotel = hotel;
         this.employeeManager = new EmployeeManager();
         this.bookingManager = new BookingManager(hotel);
         this.paymentCalculator = new PaymentCalculator();
     }
-    
+
     public void showAdminMenu() {
         Scanner scanner = new Scanner(System.in);
         int choice;
-        
         do {
             System.out.println("\n=== ADMIN DASHBOARD ===");
-            System.out.println("1. Employee Management");
-            System.out.println("2. Manage Bookings");
-            System.out.println("3. Calculate Payments");
-            System.out.println("4. View Hotel Statistics");
-            System.out.println("5. Back to Main Menu");
-            System.out.print("Enter your choice: ");
-            
+            System.out.println("1. Show hotel statistics");
+            System.out.println("2. Manage bookings");
+            System.out.println("3. Calculate revenue");
+            System.out.println("4. Manage employees");
+            System.out.println("5. List rooms");
+            System.out.println("6. Exit");
+            System.out.print("Enter choice: ");
+            while (!scanner.hasNextInt()) { scanner.next(); System.out.print("Enter number: "); }
             choice = scanner.nextInt();
-            scanner.nextLine(); // consume newline
-            
+
             switch (choice) {
-                case 1:
-                    employeeManager.showEmployeeMenu();
-                    break;
-                case 2:
-                    bookingManager.showBookingMenu();
-                    break;
-                case 3:
-                    paymentCalculator.showPaymentMenu(hotel);
-                    break;
-                case 4:
-                    displayHotelStatistics();
-                    break;
-                case 5:
-                    System.out.println("Returning to main menu...");
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
+                case 1 -> displayHotelStatistics();
+                case 2 -> bookingManager.showBookingMenu();
+                case 3 -> paymentCalculator.showPaymentMenu(hotel);
+                case 4 -> employeeManager.showEmployeeMenu();
+                case 5 -> hotel.printRooms();
+                case 6 -> System.out.println("Logging out...");
+                default -> System.out.println("Invalid option.");
             }
-        } while (choice != 5);
+        } while (choice != 6);
     }
-    
+
+    // keep this INSIDE the class
     private void displayHotelStatistics() {
         System.out.println("\n=== HOTEL STATISTICS ===");
-        System.out.println("Total Rooms: " + hotel.getRooms().size());
-        
-        long occupiedRooms = hotel.getRooms().stream()
-                .filter(room -> !room.isAvailable())
-                .count();
+
+        int totalRooms = hotel.getRooms().size();
+        System.out.println("Total Rooms: " + totalRooms);
+
+        int occupiedRooms = 0;
+        for (Hotel.Room r : hotel.getRooms()) {
+            if (!r.isAvailable()) occupiedRooms++;
+        }
         System.out.println("Occupied Rooms: " + occupiedRooms);
-        
-        double occupancyRate = (double) occupiedRooms / hotel.getRooms().size() * 100;
-        System.out.printf("Occupancy Rate: %.2f%%\n", occupancyRate);
-        
+
+        double occupancyRate = totalRooms == 0 ? 0.0 : (occupiedRooms * 100.0) / totalRooms;
+        System.out.printf("Occupancy Rate: %.2f%%%n", occupancyRate);
+
         System.out.println("Total Bookings: " + hotel.getBookings().size());
     }
 }

@@ -7,63 +7,46 @@
  *
  * @author USER
  */
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
 public class PaymentCalculator {
     public void showPaymentMenu(Hotel hotel) {
         Scanner scanner = new Scanner(System.in);
         int choice;
-        
         do {
             System.out.println("\n=== PAYMENT CALCULATION ===");
-            System.out.println("1. Calculate Employee Payments");
-            System.out.println("2. Calculate Revenue Report");
-            System.out.println("3. Back to Admin Menu");
-            System.out.print("Enter your choice: ");
-            
+            System.out.println("1. Show revenue summary");
+            System.out.println("2. Back");
+            System.out.print("Enter choice: ");
+            while (!scanner.hasNextInt()) { scanner.next(); System.out.print("Enter number: "); }
             choice = scanner.nextInt();
-            scanner.nextLine(); // consume newline
-            
+
             switch (choice) {
-                case 1:
-                    calculateEmployeePayments();
-                    break;
-                case 2:
-                    calculateRevenueReport(hotel);
-                    break;
-                case 3:
-                    System.out.println("Returning to admin menu...");
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
+                case 1 -> showRevenue(hotel);
+                case 2 -> System.out.println("Returning...");
+                default -> System.out.println("Invalid option.");
             }
-        } while (choice != 3);
+        } while (choice != 2);
     }
-    
-    private void calculateEmployeePayments() {
-        // In a real application, this would calculate payments for all employees
-        System.out.println("\nEmployee payment calculation feature would be implemented here.");
-        System.out.println("This would connect to the employee database and calculate salaries,");
-        System.out.println("deductions, bonuses, and generate payment reports.");
-    }
-    
-    private void calculateRevenueReport(Hotel hotel) {
-        System.out.println("\n=== REVENUE REPORT ===");
-        
-        double totalRevenue = 0;
+
+    private void showRevenue(Hotel hotel) {
+        double totalRevenue = 0.0;
         Map<String, Double> revenueByRoomType = new HashMap<>();
-        
-        for (Booking booking : hotel.getBookings()) {
-            double bookingRevenue = booking.getRoom().getPrice() * booking.getNights();
+
+        for (Hotel.Booking booking : hotel.getBookings()) {
+            double bookingRevenue = booking.getTotalCost();
             totalRevenue += bookingRevenue;
-            
             String roomType = booking.getRoom().getType();
-            revenueByRoomType.put(roomType, 
-                revenueByRoomType.getOrDefault(roomType, 0.0) + bookingRevenue);
+            double prev = revenueByRoomType.getOrDefault(roomType, 0.0);
+            revenueByRoomType.put(roomType, prev + bookingRevenue);
         }
-        
-        System.out.printf("Total Revenue: $%.2f\n", totalRevenue);
-        System.out.println("\nRevenue by Room Type:");
-        for (Map.Entry<String, Double> entry : revenueByRoomType.entrySet()) {
-            System.out.printf("%-10s: $%.2f\n", entry.getKey(), entry.getValue());
+
+        System.out.printf("Total Revenue: $%.2f%n", totalRevenue);
+        System.out.println("Revenue by Room Type:");
+        for (Map.Entry<String, Double> e : revenueByRoomType.entrySet()) {
+            System.out.printf("  %-10s : $%.2f%n", e.getKey(), e.getValue());
         }
     }
 }
