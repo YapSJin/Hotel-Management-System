@@ -3,21 +3,18 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 import java.util.Scanner;
+
 /**
- *
- * @author USER
+ * Admin Dashboard (booking management removed from menu)
  */
-// Admin Dashboard class
 public class AdminDashboard {
     private final Hotel hotel;
     private final EmployeeManager employeeManager;
-    private final BookingManager bookingManager;
     private final PaymentCalculator paymentCalculator;
 
     public AdminDashboard(Hotel hotel) {
         this.hotel = hotel;
         this.employeeManager = new EmployeeManager();
-        this.bookingManager = new BookingManager(hotel);
         this.paymentCalculator = new PaymentCalculator();
     }
 
@@ -27,31 +24,28 @@ public class AdminDashboard {
         do {
             System.out.println("\n=== ADMIN DASHBOARD ===");
             System.out.println("1. Show hotel statistics");
-            System.out.println("2. Manage bookings");
-            System.out.println("3. Calculate revenue");
-            System.out.println("4. Manage employees");
-            System.out.println("5. List rooms");
-            System.out.println("6. Exit");
-            System.out.print("Enter choice: ");
-            while (!scanner.hasNextInt()) { scanner.next(); System.out.print("Enter number: "); }
+            System.out.println("2. Payment & charges");
+            System.out.println("3. Manage employees");
+            System.out.println("4. Logout");
+            System.out.print("Choose an option: ");
+
+            while (!scanner.hasNextInt()) {
+                System.out.print("Please enter a valid number: ");
+                scanner.next();
+            }
             choice = scanner.nextInt();
 
             switch (choice) {
                 case 1 -> displayHotelStatistics();
-                case 2 -> bookingManager.showBookingMenu();
-                case 3 -> paymentCalculator.showPaymentMenu(hotel);
-                case 4 -> employeeManager.showEmployeeMenu();
-                case 5 -> hotel.printRooms();
-                case 6 -> System.out.println("Logging out...");
-                default -> System.out.println("Invalid option.");
+                case 2 -> paymentCalculator.showPaymentMenu(hotel);
+                case 3 -> employeeManager.showEmployeeMenu();
+                case 4 -> System.out.println("Logging out...");
+                default -> System.out.println("Invalid option. Try again.");
             }
-        } while (choice != 6);
+        } while (choice != 4);
     }
 
-    // keep this INSIDE the class
     private void displayHotelStatistics() {
-        System.out.println("\n=== HOTEL STATISTICS ===");
-
         int totalRooms = hotel.getRooms().size();
         System.out.println("Total Rooms: " + totalRooms);
 
