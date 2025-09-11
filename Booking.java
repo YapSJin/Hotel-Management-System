@@ -1,3 +1,5 @@
+import java.util.*;
+
 class Booking {
     private String bookingID;
     private String guestID;
@@ -117,5 +119,95 @@ class Booking {
     @Override
     public String toString() {
         return " Booking ID: " + bookingID + " | Name: " + guestName + " (" + phoneNo + ") | Room: " + room.getRoomID() + " | " + checkIn + " - " + checkOut + " | Nights: " + nights + " | Total: RM" + totalAmount + " | " + status + " | " + payment;
+    }
+    
+    public static void bookRoom(Scanner scanner, ArrayList<Room> rooms, ArrayList<Booking> bookings, int bookingCounter) {
+        System.out.print("Enter guest ID: ");
+        String guestID = scanner.nextLine();
+        System.out.print("Enter guest name: ");
+        String guestName = scanner.nextLine();
+        System.out.print("Enter phone number: ");
+        String phoneNo = scanner.nextLine();
+        Room.viewRooms(rooms);
+        String type;
+        while (true) {
+        System.out.print("\nEnter room type (Single/Double/Suite): ");
+        type = scanner.nextLine().trim();
+        if (type.equalsIgnoreCase("Single") || type.equalsIgnoreCase("Double") || type.equalsIgnoreCase("Suite")) {
+            break;
+        } else {
+            System.out.println("Invalid room type. Please enter Single, Double, or Suite.");
+        }
+    }
+        System.out.print("Enter check-in date (YYYY-MM-DD): ");
+        String checkIn = scanner.nextLine();
+        System.out.print("Enter check-out date (YYYY-MM-DD): ");
+        String checkOut = scanner.nextLine();
+        System.out.print("Enter number of nights: ");
+        int nights = scanner.nextInt();
+        scanner.nextLine();
+
+        Room chosen = null;
+        for (Room r : rooms) {
+            if (r.getType().equalsIgnoreCase(type) && r.getStatus().equals("Available")) {
+                chosen = r;
+                r.setStatus("Booked");
+                break;
+            }
+        }
+
+        if (chosen == null) {
+            System.out.println("No available " + type + " rooms.");
+            return;
+        }
+
+        String bookingID = String.format("B%03d", bookingCounter++);
+        Booking booking = new Booking(bookingID, guestID, guestName, phoneNo, chosen, checkIn, checkOut, nights);
+        bookings.add(booking);
+
+        System.out.println("Booking successful! " + booking);
+    }
+    
+    public static void modifyReservation(Scanner scanner, ArrayList<Booking> bookings, ArrayList<Room> rooms, ArrayList<Payment> payments) {
+        System.out.print("Enter booking ID: ");
+        String bookingID = scanner.nextLine();
+
+        for (Booking b : bookings) {
+            if (b.getBookingID().equals(bookingID) && b.getStatus().equals("Booked")) {
+                System.out.println("Found booking: " + b);
+                System.out.println("1. Change Dates");
+                System.out.println("2. Change Nights");
+                System.out.println("3. Cancel Reservation");
+                System.out.println("4. Exit");
+                System.out.print("Enter choice: ");
+                int opt = scanner.nextInt(); scanner.nextLine();
+                
+                if (opt == 1) {
+                    System.out.print("Enter new check-in date: ");
+                    String newIn = scanner.nextLine();
+                    System.out.print("Enter new check-out date: ");
+                    String newOut = scanner.nextLine();
+                    b.setCheckIn(newIn);
+                    b.setCheckOut(newOut);
+                    System.out.println("Reservation dates updated: " + b);
+                }
+                else if (opt == 2) {
+                    System.out.print("Enter new number of nights: ");
+                    int newNights = scanner.nextInt(); scanner.nextLine();
+                    b.setNights(newNights);
+                    System.out.println("Reservation nights updated: " + b);
+                }
+                else if (opt == 3) {
+                    b.setStatus("Cancelled");
+                    b.setPayment("Unpaid");
+                    b.getRoom().setStatus("Available");
+                    System.out.println("Reservation cancelled: " + b);
+                }
+                else if (opt == 4) {
+                    return;
+                }
+            }
+        }
+        System.out.println("Booking not found.");
     }
 }

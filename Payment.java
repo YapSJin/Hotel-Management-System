@@ -1,3 +1,5 @@
+import java.util.*;
+
 class Payment {
     private String paymentID;
     private String bookingID;
@@ -68,4 +70,84 @@ class Payment {
     public String toString() {
         return paymentID + " | Booking ID: " + bookingID + " | Amount: RM" + amountPaid + " | Method: " + paymentMethod + " | Status: " + status;
     }
+    
+    public static void makePayment(Scanner scanner, ArrayList<Booking> bookings, ArrayList<Payment> payments, int paymentCounter) {
+    System.out.print("Enter booking ID: ");
+    String bookingID = scanner.nextLine();
+
+    for (Booking b : bookings) {
+        if (b.getBookingID().equals(bookingID) && b.getPayment().equals("Unpaid")) {
+            System.out.println("Booking found: " + b);
+            double amount = b.getTotalAmount();
+            System.out.println("Amount to pay: RM" + amount);
+
+            String method;
+            while (true) {
+                System.out.print("Enter payment method (Cash/Card/Ewallet): ");
+                method = scanner.nextLine().trim();
+
+                if (method.equalsIgnoreCase("Cash") || method.equalsIgnoreCase("Card") || method.equalsIgnoreCase("Ewallet")) {
+                    break;
+                } else {
+                    System.out.println("Invalid payment method. Please enter Cash, Card, or Ewallet.");
+                }
+            }
+
+            String cardID = null;
+            if (method.equalsIgnoreCase("Card") || method.equalsIgnoreCase("Ewallet")) {
+                while (true) {
+                    System.out.print("Enter " + method + " ID: ");
+                    cardID = scanner.nextLine().trim();
+                    if (!cardID.isEmpty()) {
+                        break;
+                    } else {
+                        System.out.println("Error! " + method + " ID cannot be empty.");
+                    }
+                }
+            }
+
+            String paymentID = String.format("P%03d", paymentCounter++);
+            Payment payment = new Payment(paymentID, bookingID, amount, method, cardID, "Paid");
+            payment.setCardID(cardID);
+            payments.add(payment);
+
+            b.setPayment("Paid");
+
+            System.out.println("Payment successful: " + payment);
+            return;
+        }
+    }
+    System.out.println("Booking not found or already paid.");
+    }
+    
+       public static void viewPayments(ArrayList<Payment> payments) {
+        System.out.println("\nPayment Records:");
+        for (Payment p : payments) {
+            System.out.println(p);
+        }
+        if (payments.isEmpty()) {
+            System.out.println("No payments recorded yet.");
+       }
+    }
+       
+       public static void cancelPayment(Scanner scanner, ArrayList<Payment> payments, ArrayList<Booking> bookings) {
+    System.out.print("Enter payment ID to cancel: ");
+    String pid = scanner.nextLine();
+
+    for (int i = 0; i < payments.size(); i++) {
+        Payment p = payments.get(i);
+        if (p.getPaymentID().equals(pid)) {
+            for (Booking b : bookings) {
+                if (b.getBookingID().equals(p.getBookingID())) {
+                    b.setPayment("Unpaid");
+                }
+            }
+
+            payments.remove(i);
+            System.out.println("Payment " + pid + " cancelled. Booking set to Unpaid.");
+            return;
+        }
+    }
+    System.out.println("Payment not found.");
+}
 }

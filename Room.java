@@ -1,3 +1,5 @@
+import java.util.*;
+
 class Room {
     private String roomID;
     private String type;
@@ -46,5 +48,13 @@ class Room {
     @Override
     public String toString() {
         return roomID + "    | " + type + " |  RM" + pricePerNight + "  | " + status;
+    }
+    
+        public static void viewRooms(ArrayList<Room> rooms) {
+        System.out.println("\nRoomID  |  Type  |  Price  |  Status ");
+        System.out.println("=======================================");
+        for (Room r : rooms) {
+            System.out.println(r);
+        }
     }
 }
