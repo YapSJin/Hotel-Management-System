@@ -10,15 +10,15 @@
 import java.time.LocalTime;
 
 public class GeneralEmployee extends Employee {
-    public GeneralEmployee(String id, String role, double salaryPerHour, LocalTime schedule) {
-        super(id, role, salaryPerHour, schedule);
+    public GeneralEmployee(String id, String role, double monthlySalary, LocalTime schedule) {
+        super(id, role, monthlySalary, schedule);
+        setMonthlySalary(monthlySalary);
     }
 
     @Override
     public double calculateMonthlySalary() {
-        // Example: Work hours = difference between start time and 8 hours shift
-        // Here we simply assume fixed 8 hours per day × 30 days
-        return getBasicSalary() * 8 * 30; 
+        // Directly return monthly salary since it's predefined
+        return getBasicSalary();
     }
 }
 
