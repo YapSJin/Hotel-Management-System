@@ -14,12 +14,12 @@ import java.util.Scanner;
 public class EmployeeManager {
     private final Scanner scanner = new Scanner(System.in);
 
-    // Add some initial data
+    // Add some initial data (monthly salary)
     public EmployeeManager() {
         if (Employee.getEmployeeList().isEmpty()) {
-            new GeneralEmployee("E001", "Manager", 50, LocalTime.of(9, 0));
-            new GeneralEmployee("E002", "Receptionist", 30, LocalTime.of(8, 0));
-            new GeneralEmployee("E003", "Cleaner", 20, LocalTime.of(10, 0));
+            new GeneralEmployee("E001", "Manager", 3000, LocalTime.of(9, 0));
+            new GeneralEmployee("E002", "Receptionist", 2000, LocalTime.of(8, 0));
+            new GeneralEmployee("E003", "Cleaner", 1500, LocalTime.of(10, 0));
         }
     }
 
@@ -54,10 +54,28 @@ public class EmployeeManager {
             System.out.println("No employees.");
             return;
         }
+
+        // Table header
+        String border = "+===============+===============+===============+===============+";
+        String header = String.format("| %13s | %13s | %13s | %13s |",
+                "Staff ID", "Role", "Schedule", "Monthly Salary");
+
+        System.out.println(border);
+        System.out.println(header);
+        System.out.println(border);
+
+        // Employee rows
         for (Employee e : list) {
-            System.out.println(e);
-            System.out.println("Calculated Monthly Salary: RM " + e.calculateMonthlySalary());
+            String row = String.format("| %13s | %13s | %13s | RM%11.2f |",
+                    e.getStaffID(),
+                    e.getRole(),
+                    e.getSchedule(),
+                    e.calculateMonthlySalary());
+            System.out.println(row);
         }
+
+        // Bottom border
+        System.out.println(border);
     }
 
     private void addEmployee() {
@@ -65,12 +83,12 @@ public class EmployeeManager {
         String id = scanner.next();
         System.out.print("Enter role: ");
         String role = scanner.next();
-        System.out.print("Enter hourly salary: ");
-        double hourlyRate = scanner.nextDouble();
+        System.out.print("Enter monthly salary: ");
+        double monthlySalary = scanner.nextDouble();
         System.out.print("Enter start hour (0-23): ");
         int hour = scanner.nextInt();
 
-        new GeneralEmployee(id, role, hourlyRate, LocalTime.of(hour, 0));
+        new GeneralEmployee(id, role, monthlySalary, LocalTime.of(hour, 0));
         System.out.println("Employee added.");
     }
 
@@ -109,3 +127,4 @@ public class EmployeeManager {
         }
     }
 }
+
