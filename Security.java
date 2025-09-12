@@ -9,13 +9,11 @@ public class Security {
     private String role; // "admin" or "user"
     private static ArrayList<Security> account = new ArrayList<>();
 
-    // ✅ Static block: runs once when class is loaded (no duplicates)
     static {
         new Security("admin", "admin123", "admin");
         new Security("user", "user123", "user");
     }
 
-    // Main constructor
     public Security(String user_name, String password, String role) {
         this.user_name = user_name;
         this.password = password;
@@ -43,7 +41,6 @@ public class Security {
         this.password = password;
     }
 
-    // ✅ Login method for both admin & user
     public static Security login(String expectedRole) {
         System.out.println("\n=== " + expectedRole.toUpperCase() + " LOGIN ===");
         System.out.print("Username: ");
@@ -64,7 +61,6 @@ public class Security {
         return null;
     }
 
-    //Create new account
     public static void createAccount(String roles) {
         System.out.println("\n=== CREATE " + roles.toUpperCase() + " ACCOUNT ===");
         System.out.print("Enter the User Name: ");
@@ -84,7 +80,6 @@ public class Security {
         System.out.println("" + roles + " account created successfully!");
     }
 
-    //Delete account (except default admin)
     public static void deleteAccount() {
         System.out.println("\n=== DELETE ACCOUNT ===");
         System.out.print("Enter Username to delete: ");
@@ -105,7 +100,6 @@ public class Security {
         }
     }
 
-    //View all accounts (admin only)
     public static void viewAccounts() {
         System.out.println("\n=== ACCOUNT LIST ===");
         for (Security acc : account) {

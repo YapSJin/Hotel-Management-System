@@ -25,7 +25,6 @@ public class Payment {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    // === Static helpers used by BookingSystem ===
     public static void makePayment(Scanner scanner, ArrayList<Booking> bookings, ArrayList<Payment> payments, int paymentCounter) {
         if (bookings == null || bookings.isEmpty()) {
             System.out.println("No bookings available for payment.");

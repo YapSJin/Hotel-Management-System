@@ -97,8 +97,6 @@ public class EmployeeManager {
         do {
             System.out.print("Enter the Staff ID(Without Duplicate):");
             staffID = scanner.next();
-
-            // Check Duplicate
             boolean duplicateFound = houseKeeping.stream().anyMatch(e -> e.getStaffID().equalsIgnoreCase(staffID))
                     || deskStaff.stream().anyMatch(e -> e.getStaffID().equalsIgnoreCase(staffID))
                     || manager.stream().anyMatch(e -> e.getStaffID().equalsIgnoreCase(staffID));
@@ -339,8 +337,6 @@ public class EmployeeManager {
         tempEmp.setSchedule(schedule);
 
     }
-
-    // Add near the end of EmployeeManager.java (before the final closing brace)
     public static void updateSalary() {
         Scanner sc = scanner;
         System.out.print("Enter employee ID to update salary: ");
@@ -351,10 +347,8 @@ public class EmployeeManager {
         }
         updateSalary(id);
     }
-    // Overload to support existing call-sites that pass an ID
     public static void updateSalary(String empID) {
         if (empID == null || empID.trim().isEmpty()) {
-            // Fall back to the interactive version
             updateSalary();
             return;
         }
@@ -368,8 +362,6 @@ public class EmployeeManager {
                 try {
                     System.out.print("Enter new monthly salary for " + id + ": ");
                     double newSalary = Double.parseDouble(scanner.nextLine());
-
-                    // Update both basic & monthly to keep your model consistent
                     e.setBasicSalary(newSalary);
                     e.setMonthlySalary(newSalary);
 
@@ -385,7 +377,6 @@ public class EmployeeManager {
         System.out.println("Employee not found: " + id);
     }
 }
-        // EmployeeManager.java (added at end, before final brace)
     public void showEmployeeMenu() {
     while (true) {
         System.out.println("\n=== EMPLOYEE MENU ===");

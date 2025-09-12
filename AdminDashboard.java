@@ -3,10 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 import java.util.Scanner;
-
-/**
- * Admin Dashboard (booking management removed from menu)
- */
 public class AdminDashboard {
     private final Hotel hotel;
     private final EmployeeManager employeeManager;
@@ -19,39 +15,45 @@ public class AdminDashboard {
     }
 
     public void showAdminMenu() {
-        Scanner scanner = new Scanner(System.in);
-        int choice;
-        do {
-            System.out.println("\n=== ADMIN DASHBOARD ===");
-            System.out.println("1. Show hotel statistics");
-            System.out.println("2. Payment & charges");
-            System.out.println("3. Manage employees");
-            System.out.println("4. Logout");
-            System.out.print("Choose an option: ");
+    Scanner scanner = new Scanner(System.in);
+    int choice;
+    do {
+        System.out.println("\n=== ADMIN DASHBOARD ===");
+        System.out.println("1. Show hotel statistics");
+        System.out.println("2. Payment & charges");
+        System.out.println("3. Manage employees");
+        System.out.println("4. View all accounts");
+        System.out.println("5. Logout");
+        System.out.print("Choose an option: ");
 
-            while (!scanner.hasNextInt()) {
-                System.out.print("Please enter a valid number: ");
-                scanner.next();
-            }
-            choice = scanner.nextInt();
-            switch(choice) {
-        case 1:
-            displayHotelStatistics();
-            break;
-        case 2:
-            paymentCalculator.showPaymentMenu(hotel);
-            break;
-        case 3:
-            employeeManager.showEmployeeMenu();
-               break;
-        case 4:
-            System.out.println("Logging out...");
-            return;
-           default:
-            System.out.println("Invalid option. Try again.");
-    }
-        } while (choice != 4);
-    }
+        while (!scanner.hasNextInt()) {
+            System.out.print("Please enter a valid number: ");
+            scanner.next();
+        }
+        choice = scanner.nextInt();
+
+        switch (choice) {
+            case 1:
+                displayHotelStatistics();
+                break;
+            case 2:
+                paymentCalculator.showPaymentMenu(hotel);
+                break;
+            case 3:
+                employeeManager.showEmployeeMenu();
+                break;
+            case 4:
+                Security.viewAccounts();
+                break;
+            case 5:
+                System.out.println("Logging out...");
+                return;
+            default:
+                System.out.println("Invalid option. Try again.");
+        }
+    } while (true);
+}
+
     private void displayHotelStatistics() {
         int totalRooms = hotel.getRooms().size();
         System.out.println("Total Rooms: " + totalRooms);
