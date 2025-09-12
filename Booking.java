@@ -139,13 +139,38 @@ class Booking {
             System.out.println("Invalid room type. Please enter Single, Double, or Suite.");
         }
     }
-        System.out.print("Enter check-in date (YYYY-MM-DD): ");
-        String checkIn = scanner.nextLine();
-        System.out.print("Enter check-out date (YYYY-MM-DD): ");
-        String checkOut = scanner.nextLine();
-        System.out.print("Enter number of nights: ");
-        int nights = scanner.nextInt();
-        scanner.nextLine();
+        String checkIn, checkOut;
+        while (true) {
+            System.out.print("Enter check-in date (YYYY-MM-DD): ");
+            checkIn = scanner.nextLine().trim();
+            
+            if (!checkIn.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                System.out.println("Invalid format. Please use YYYY-MM-DD.");
+            } else {
+                System.out.print("Enter check-out date (YYYY-MM-DD): ");
+                checkOut = scanner.nextLine().trim();
+                if (!checkOut.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                    System.out.println("Invalid format. Please use YYYY-MM-DD.");
+                } else if (checkOut.compareTo(checkIn) <= 0) {
+                    System.out.println("Check-out date must be after check-in date.");
+                } else {
+                    break;
+                }
+            }
+        }
+
+        int nights;
+        while (true) {
+            System.out.print("Enter number of nights: ");
+            if (scanner.hasNextInt()) {
+                nights = scanner.nextInt();
+                scanner.nextLine();
+                if (nights > 0) break;
+            } else {
+                scanner.nextLine();
+            }
+            System.out.println("Invalid number. Nights must be a positive integer.");
+        }
 
         Room chosen = null;
         for (Room r : rooms) {
@@ -171,9 +196,11 @@ class Booking {
     public static void modifyReservation(Scanner scanner, ArrayList<Booking> bookings, ArrayList<Room> rooms, ArrayList<Payment> payments) {
         System.out.print("Enter booking ID: ");
         String bookingID = scanner.nextLine();
+        boolean found = false;
 
         for (Booking b : bookings) {
             if (b.getBookingID().equals(bookingID) && b.getStatus().equals("Booked")) {
+                found = true; 
                 System.out.println("Found booking: " + b);
                 System.out.println("1. Change Dates");
                 System.out.println("2. Change Nights");
@@ -183,14 +210,29 @@ class Booking {
                 int opt = scanner.nextInt(); scanner.nextLine();
                 
                 if (opt == 1) {
-                    System.out.print("Enter new check-in date: ");
-                    String newIn = scanner.nextLine();
-                    System.out.print("Enter new check-out date: ");
-                    String newOut = scanner.nextLine();
+                    String newIn, newOut;
+                    while (true) {
+                        System.out.print("Enter new check-in date (YYYY-MM-DD): ");
+                        newIn = scanner.nextLine().trim();
+                        if (!newIn.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                            System.out.println("Invalid format. Please use YYYY-MM-DD.");
+                        } else {
+                            System.out.print("Enter new check-out date (YYYY-MM-DD): ");
+                            newOut = scanner.nextLine().trim();
+                            if (!newOut.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                                System.out.println("Invalid format. Please use YYYY-MM-DD.");
+                            } else if (newOut.compareTo(newIn) <= 0) {
+                                System.out.println("Check-out must be after check-in.");
+                            } else {
+                                break;
+                            }
+                        }
+                    }
                     b.setCheckIn(newIn);
                     b.setCheckOut(newOut);
                     System.out.println("Reservation dates updated: " + b);
                 }
+                
                 else if (opt == 2) {
                     System.out.print("Enter new number of nights: ");
                     int newNights = scanner.nextInt(); scanner.nextLine();
@@ -208,6 +250,8 @@ class Booking {
                 }
             }
         }
-        System.out.println("Booking not found.");
+        if (!found) {
+            System.out.println("Booking not found.");
+        }
     }
 }
