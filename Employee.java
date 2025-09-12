@@ -1,6 +1,3 @@
-
-package assigment;
-
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -42,6 +39,9 @@ public abstract class Employee{
        return basicSalary;
    }
    
+   public void setBasicSalary(double basicSalary){
+    this.basicSalary = basicSalary;
+   }
    public void setMonthlySalary(double monthlySalary){
        if(monthlySalary < 0){
            System.out.println("Invalid");
