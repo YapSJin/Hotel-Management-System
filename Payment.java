@@ -77,6 +77,15 @@ class Payment {
 
     for (Booking b : bookings) {
         if (b.getBookingID().equals(bookingID) && b.getPayment().equals("Unpaid")) {
+            if (b.getStatus().equals("Cancelled")) {
+                System.out.println("Booking is cancelled. Payment not allowed.");
+                return;
+            }
+
+            if (b.getPayment().equals("Paid")) {
+                System.out.println("This booking is already paid.");
+                return;
+            }
             System.out.println("Booking found: " + b);
             double amount = b.getTotalAmount();
             System.out.println("Amount to pay: RM" + amount);
