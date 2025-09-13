@@ -10,7 +10,6 @@ public class EmployeeManager {
     private static final Scanner scanner = new Scanner(System.in);
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
-    // Keep original structure: 3 typed lists + a scratch aggregate list
     private static final ArrayList<Employee> houseKeeping = new ArrayList<>();
     private static final ArrayList<Employee> deskStaff = new ArrayList<>();
     private static final ArrayList<Employee> manager = new ArrayList<>();
@@ -25,12 +24,10 @@ public class EmployeeManager {
 
     public EmployeeManager() { }
 
-    // --- Getters for typed lists (original API kept) ---
     public static ArrayList<Employee> getHouseKeeping() { return houseKeeping; }
     public static ArrayList<Employee> getDeskStaff() { return deskStaff; }
     public static ArrayList<Employee> getManager() { return manager; }
 
-    // --- Seed data (optional) ---
     public static void initializeEmployeeList() {
         houseKeeping.add(new HouseKeeping("H001", 3500.0, LocalTime.of(10, 0)));
         houseKeeping.add(new HouseKeeping("H002", 3000.0, LocalTime.of(15, 0)));
@@ -346,7 +343,6 @@ public class EmployeeManager {
         }
     }
 
-    // --- MENU (instance method, minimal change; FIXED: add breaks) ---
     public void showEmployeeMenu() {
         while (true) {
             System.out.println(
@@ -382,3 +378,4 @@ public class EmployeeManager {
         }
     }
 }
+
