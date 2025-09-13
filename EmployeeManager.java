@@ -97,6 +97,8 @@ public class EmployeeManager {
         do {
             System.out.print("Enter the Staff ID(Without Duplicate):");
             staffID = scanner.next();
+
+            // Check Duplicate
             boolean duplicateFound = houseKeeping.stream().anyMatch(e -> e.getStaffID().equalsIgnoreCase(staffID))
                     || deskStaff.stream().anyMatch(e -> e.getStaffID().equalsIgnoreCase(staffID))
                     || manager.stream().anyMatch(e -> e.getStaffID().equalsIgnoreCase(staffID));
@@ -337,75 +339,58 @@ public class EmployeeManager {
         tempEmp.setSchedule(schedule);
 
     }
-    public static void updateSalary() {
-        Scanner sc = scanner;
-        System.out.print("Enter employee ID to update salary: ");
-        String id = sc.nextLine().trim();
-        if (id.isEmpty()) {
-            System.out.println("No ID entered.");
-            return;
-        }
-        updateSalary(id);
-    }
-    public static void updateSalary(String empID) {
-        if (empID == null || empID.trim().isEmpty()) {
-            updateSalary();
-            return;
-        }
 
-        String id = empID.trim();
+    public static void updateSalary(String empID) {
         boolean found = false;
 
-        for (Employee e : Employee.getEmployeeList()) {
-            if (e.getStaffID().equalsIgnoreCase(id)) {
+        for (Employee emp : employeeList) {
+            if (emp.getStaffID().equalsIgnoreCase(empID)) {
                 found = true;
-                try {
-                    System.out.print("Enter new monthly salary for " + id + ": ");
-                    double newSalary = Double.parseDouble(scanner.nextLine());
-                    e.setBasicSalary(newSalary);
-                    e.setMonthlySalary(newSalary);
 
-                    System.out.println("Salary updated for " + id + " -> RM " + String.format("%.2f", newSalary));
-                } catch (Exception ex) {
-                    System.out.println("Invalid amount.");
+                if (emp instanceof HouseKeeping) {
+                    try {
+                        System.out.print("Over Time Hours:");
+                        int otHours = scanner.nextInt();
+                        if (otHours < 0) {
+                            System.out.println("Invalid Over Time Hours,must be positive !!!");
+                            return;
+                        }
+                        scanner.nextLine();
+                        ((HouseKeeping) emp).setOtHours(otHours);
+                        System.out.println("Salary after updated " + ": " + emp.calculateMonthlySalary());
+                        emp.setMonthlySalary(emp.calculateMonthlySalary());
+                    } catch (InputMismatchException ex) {
+                        System.out.println("Please Enter Number !!!");
+                        return;
+                    }
+
+                } else if (emp instanceof DeskStaff) {
+                    System.out.println("Salary after updated " + ": " + emp.calculateMonthlySalary());
+                    emp.setMonthlySalary(emp.calculateMonthlySalary());
+
+                } else if (emp instanceof Manager) {
+                    try {
+                        System.out.print("Bonus(RM):");
+                        int bonus = scanner.nextInt();
+                        if (bonus < 0) {
+                            System.out.println("Bonus must be positive number");
+                            return;
+                        }
+                        ((Manager) emp).setBonus(bonus);
+                        System.out.println("Salary after updated " + ": " + emp.calculateMonthlySalary());
+                        emp.setMonthlySalary(emp.calculateMonthlySalary());
+                    } catch (InputMismatchException ex) {
+                        System.out.println("Please Enter number only !!!");
+                        return;
+                    }
+
                 }
                 break;
             }
         }
-
-    if (!found) {
-        System.out.println("Employee not found: " + id);
-    }
-}
-    public void showEmployeeMenu() {
-    while (true) {
-         System.out.println("\r\n"+ //
-                                "+----+-------------------------+\r\n"+//
-                                "| NO |        EMPLOYEE         |\r\n"+//
-                                "+----+-------------------------+\r\n"+//
-                                "| 1. | List Employee           |\r\n"+//
-                                "| 2. | Add Employee            |\r\n"+//
-                                "| 3. | Update Employee Detail  |\r\n"+//
-                                "| 4. | Update Salary           |\r\n"+//
-                                "| 5. | Remove Employee         |\r\n"+//
-                                "| 0. | Back                    |\r\n"+//
-                                "+----+-------------------------+\r\n"+//
-                                "\r\n"+//
-                                "");
-        System.out.print("Enter choice: ");
-        int choice;
-        try { choice = Integer.parseInt(scanner.nextLine()); }
-        catch (Exception e) { System.out.println("Enter a number."); continue; }
-
-        switch (choice) {
-            case 1: employeeListCheck();
-            case 2: addNewStaff();
-            case 3: updateEmployeeDetail();
-            case 4: updateSalary();
-            case 5: deleteStaff();
-            case 0: { return; }
-            default: System.out.println("Invalid choice.");
+        if (!found) {
+            System.out.println("Invalid ID");
+            return;
         }
-    }
     }
 }
