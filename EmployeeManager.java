@@ -1,5 +1,3 @@
-
-
 import java.time.DateTimeException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -9,36 +7,30 @@ import java.util.Scanner;
 
 public class EmployeeManager {
 
-    private static Scanner scanner = new Scanner(System.in);
-    DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm");
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
-    private static ArrayList<Employee> houseKeeping = new ArrayList<>();
-    private static ArrayList<Employee> deskStaff = new ArrayList<>();
-    private static ArrayList<Employee> manager = new ArrayList<>();
-    private static ArrayList<Employee> employeeList = new ArrayList<>();
+    // Keep original structure: 3 typed lists + a scratch aggregate list
+    private static final ArrayList<Employee> houseKeeping = new ArrayList<>();
+    private static final ArrayList<Employee> deskStaff = new ArrayList<>();
+    private static final ArrayList<Employee> manager = new ArrayList<>();
+    private static final ArrayList<Employee> employeeList = new ArrayList<>();
+
     private static int staffType = 0;
     private static boolean validType = false;
     private static String staffID;
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
     private static LocalTime schedule;
     private static double salary;
     private static String time;
 
-    public EmployeeManager() {
-    };
+    public EmployeeManager() { }
 
-    public static ArrayList<Employee> getHouseKeeping() {
-        return houseKeeping;
-    }
+    // --- Getters for typed lists (original API kept) ---
+    public static ArrayList<Employee> getHouseKeeping() { return houseKeeping; }
+    public static ArrayList<Employee> getDeskStaff() { return deskStaff; }
+    public static ArrayList<Employee> getManager() { return manager; }
 
-    public static ArrayList<Employee> getDeskStaff() {
-        return deskStaff;
-    }
-
-    public static ArrayList<Employee> getManager() {
-        return manager;
-    }
-
+    // --- Seed data (optional) ---
     public static void initializeEmployeeList() {
         houseKeeping.add(new HouseKeeping("H001", 3500.0, LocalTime.of(10, 0)));
         houseKeeping.add(new HouseKeeping("H002", 3000.0, LocalTime.of(15, 0)));
@@ -47,57 +39,50 @@ public class EmployeeManager {
         manager.add(new Manager("M001", 6500.0, LocalTime.of(10, 0)));
     }
 
+    // --- CREATE ---
     public static void addNewStaff() {
         employeeList.clear();
+        // Choose staff type
         do {
             try {
-                System.out.print("1.Housekeeping\n"
-                        + "2.Desk Staff\n"
-                        + "3.Manager\nPlease Enter The Staff Type (1 - 3):");
-                staffType = scanner.nextInt();
-                scanner.nextLine();
+                System.out.print("1.Housekeeping\n2.Desk Staff\n3.Manager\nPlease Enter The Staff Type (1 - 3): ");
+                staffType = Integer.parseInt(scanner.nextLine().trim());
                 if (staffType < 1 || staffType > 3) {
-                    System.out.println("Please Enter Number 1 - 3");
+                    System.out.println("Please enter number 1 - 3.");
                     validType = false;
                 } else {
                     validType = true;
                 }
             } catch (Exception ex) {
-                System.out.println("Please Enter A Number !!!");
+                System.out.println("Please enter a number!");
                 validType = false;
-                scanner.nextLine();
             }
         } while (!validType);
+
+        // Show existing IDs of that type
         switch (staffType) {
             case 1:
-                employeeList.clear();
                 employeeList.addAll(EmployeeManager.getHouseKeeping());
-
-                for (Employee empl : employeeList) {
-                    System.out.println(empl);
-                }
                 break;
             case 2:
-                employeeList.clear();
                 employeeList.addAll(EmployeeManager.getDeskStaff());
-
-                for (Employee empl : employeeList) {
-                    System.out.println(empl);
-                }
                 break;
             case 3:
-                employeeList.clear();
                 employeeList.addAll(EmployeeManager.getManager());
-
-                for (Employee empl : employeeList) {
-                    System.out.println(empl);
-                }
                 break;
+            default:
+                System.out.println("Invalid type.");
+                return;
         }
+        for (Employee empl : employeeList) System.out.println(empl);
+
+        // Enter unique ID with correct prefix
+        boolean duplicateFound;
         do {
-            System.out.print("Enter the Staff ID(Without Duplicate):");
-            staffID = scanner.next();
-            boolean duplicateFound = houseKeeping.stream().anyMatch(e -> e.getStaffID().equalsIgnoreCase(staffID))
+            System.out.print("Enter the Staff ID (no duplicates): ");
+            staffID = scanner.nextLine().trim();
+
+            duplicateFound = houseKeeping.stream().anyMatch(e -> e.getStaffID().equalsIgnoreCase(staffID))
                     || deskStaff.stream().anyMatch(e -> e.getStaffID().equalsIgnoreCase(staffID))
                     || manager.stream().anyMatch(e -> e.getStaffID().equalsIgnoreCase(staffID));
 
@@ -105,54 +90,55 @@ public class EmployeeManager {
                 System.out.println("Housekeeping ID must start with 'H'!");
                 validType = false;
                 continue;
-
             } else if (staffType == 2 && !staffID.toUpperCase().startsWith("D")) {
                 System.out.println("Desk Staff ID must start with 'D'!");
                 validType = false;
                 continue;
-
             } else if (staffType == 3 && !staffID.toUpperCase().startsWith("M")) {
                 System.out.println("Manager ID must start with 'M'!");
                 validType = false;
                 continue;
             }
-            for (Employee empl : employeeList) {
-                if (empl.getStaffID().equalsIgnoreCase(staffID)) {
-                    System.out.println("Duplicated Staff ID");
-                    validType = false;
-                    duplicateFound = true;
-                    continue;
-                }
+
+            if (duplicateFound) {
+                System.out.println("Duplicated Staff ID!");
+                validType = false;
+                continue;
             }
-            if (!duplicateFound) {
-                do {
-                    try {
-                        System.out.print("Enter the basic salary(RM):");
-                        salary = scanner.nextDouble();
-                        scanner.nextLine();
-                        if (salary < 0) {
-                            System.out.println("Salary cannot be negative !");
-                            validType = false;
-                        }
-                    } catch (InputMismatchException ex) {
-                        System.out.println("Invalid,Please Enter The Number");
-                        validType = false;
-                    }
+            validType = true;
+        } while (!validType);
 
-                    System.out.print("Enter the Schedule Time (HH:mm): ");
-                    time = scanner.nextLine();
-
-                    try {
-                        schedule = LocalTime.parse(time, formatter);
-                        validType = true;
-                    } catch (DateTimeException e) {
-                        System.out.println("Invalid time format! Use HH:mm (e.g. 09:00).");
-                        validType = false;
-                    }
-                } while (validType == false);
+        // Salary
+        do {
+            try {
+                System.out.print("Enter the basic salary (RM): ");
+                salary = Double.parseDouble(scanner.nextLine().trim());
+                if (salary < 0) {
+                    System.out.println("Salary cannot be negative!");
+                    validType = false;
+                } else {
+                    validType = true;
+                }
+            } catch (Exception ex) {
+                System.out.println("Invalid, please enter a number.");
+                validType = false;
             }
         } while (!validType);
 
+        // Schedule
+        do {
+            System.out.print("Enter the schedule time (HH:mm): ");
+            time = scanner.nextLine().trim();
+            try {
+                schedule = LocalTime.parse(time, formatter);
+                validType = true;
+            } catch (DateTimeException e) {
+                System.out.println("Invalid time format! Use HH:mm (e.g. 09:00).");
+                validType = false;
+            }
+        } while (!validType);
+
+        // Create
         switch (staffType) {
             case 1:
                 houseKeeping.add(new HouseKeeping(staffID, salary, schedule));
@@ -164,166 +150,89 @@ public class EmployeeManager {
                 manager.add(new Manager(staffID, salary, schedule));
                 break;
             default:
-                System.out.println("Invalid,Please Try Again");
+                System.out.println("Invalid, please try again.");
                 break;
         }
+        System.out.println("Staff added.");
     }
 
-    public static void deleteStaff() {
-
-        try {
-            employeeList.clear();
-            System.out.print("1.Housekeeping\n"
-                    + "2.Desk Staff\n"
-                    + "3.Manager\nPlease Enter The Staff Type (1 - 3):");
-            staffType = scanner.nextInt();
-            if (staffType < 1 || staffType > 3) {
-                System.out.println("Please Enter Within 1 to 3 !!!");
-                return;
-            }
-            scanner.nextLine();
-        } catch (InputMismatchException ex) {
-            System.out.println("Please enter the number !!");
-            return;
-        }
-
-        switch (staffType) {
-            case 1:
-                employeeList.addAll(EmployeeManager.getHouseKeeping());
-
-                for (Employee empl : employeeList) {
-                    System.out.println(empl);
-                }
-                break;
-            case 2:
-                employeeList.addAll(EmployeeManager.getDeskStaff());
-
-                for (Employee empl : employeeList) {
-                    System.out.println(empl);
-                }
-                break;
-            case 3:
-                employeeList.addAll(EmployeeManager.getManager());
-
-                for (Employee empl : employeeList) {
-                    System.out.println(empl);
-                }
-                break;
-        }
-        if (employeeList.isEmpty()) {
-            System.out.println("Current Employee Record Is Empty !!!");
-            return;
-        }
-        boolean valid = false;
-        do {
-            scanner.nextLine();
-            System.out.print("Enter the Staff ID:");
-            staffID = scanner.nextLine();
-
-            for (Employee emp1 : employeeList) {
-                if (emp1.getStaffID().equalsIgnoreCase(staffID)) {
-                    switch (staffType) {
-                        case 1:
-                            houseKeeping.removeIf(employee -> employee.getStaffID().equalsIgnoreCase(staffID));
-                            break;
-                        case 2:
-                            deskStaff.removeIf(employee -> employee.getStaffID().equalsIgnoreCase(staffID));
-                            break;
-                        case 3:
-                            manager.removeIf(employee -> employee.getStaffID().equalsIgnoreCase(staffID));
-                            break;
-                        default:
-                            System.out.println("Invalid. Please Try Again");
-                    }
-                    valid = true;
-                    System.out.println("Staff " + staffID + " has been deleted");
-                    break;
-                }
-            }
-            if (!valid) {
-                System.out.println("Staff Not Exist");
-            }
-
-        } while (!valid);
-
-    }
-
+    // --- READ / LIST ---
     public static void employeeListCheck() {
-
         employeeList.clear();
-
         employeeList.addAll(EmployeeManager.getDeskStaff());
         employeeList.addAll(EmployeeManager.getHouseKeeping());
         employeeList.addAll(EmployeeManager.getManager());
 
-        for (Employee emp : employeeList) {
-            System.out.println(emp);
+        if (employeeList.isEmpty()) {
+            System.out.println("No employees available.");
+            return;
         }
+        for (Employee emp : employeeList) System.out.println(emp);
 
+        // Optional quick action
         while (true) {
             try {
-                System.out.print("0.Exit\n" + "1.Update Monthly salary\n" + "Please enter your choice:");
-                int selection = scanner.nextInt();
-                scanner.nextLine();
-
+                System.out.print("0.Exit\n1.Update Monthly Salary\nPlease enter your choice: ");
+                int selection = Integer.parseInt(scanner.nextLine().trim());
                 if (selection == 1) {
-                    System.out.print("Enter ID that want to update:");
-                    String empID = scanner.nextLine();
-                    updateSalary(empID);
-                    return;
-
+                    System.out.print("Enter Employee ID to update salary: ");
+                    String id = scanner.nextLine().trim();
+                    updateSalary(id);
                 } else if (selection == 0) {
-
                     return;
                 } else {
-                    System.out.print("\033c");
-                    System.out.println("Please enter a valid selection(0 or 1)");
+                    System.out.println("Please enter a valid selection (0 or 1).");
                 }
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input! Enter a number:");
-                scanner.nextLine();
+            } catch (Exception e) {
+                System.out.println("Invalid input! Enter a number.");
             }
         }
     }
 
+    // --- UPDATE (details) ---
     public static void updateEmployeeDetail() {
         employeeList.clear();
-
         employeeList.addAll(EmployeeManager.getDeskStaff());
         employeeList.addAll(EmployeeManager.getHouseKeeping());
         employeeList.addAll(EmployeeManager.getManager());
 
-        System.out.print("Enter The Employee ID For Update :");
-        String empID = scanner.nextLine();
-        Employee tempEmp = null;
-        for (Employee emp : employeeList) {
-            if (emp.getStaffID().equalsIgnoreCase(empID)) {
-                System.out.println(emp);
-                tempEmp = emp;
-                break;
-            }
+        System.out.print("Enter the Employee ID for update: ");
+        String id = scanner.nextLine().trim();
+        if (id.isEmpty()) {
+            System.out.println("No ID entered.");
+            return;
         }
 
+        Employee tempEmp = null;
+        for (Employee emp : employeeList) {
+            if (emp.getStaffID().equalsIgnoreCase(id)) {
+                tempEmp = emp; break;
+            }
+        }
         if (tempEmp == null) {
             System.out.println("Employee ID not found!");
             return;
         }
+
+        // Salary
         do {
             try {
-                System.out.print("Enter the basic salary(RM):");
-                salary = scanner.nextDouble();
-                scanner.nextLine();
+                System.out.print("Enter the basic salary (RM): ");
+                salary = Double.parseDouble(scanner.nextLine().trim());
                 if (salary < 0) {
-                    System.out.println("Salary cannot be negative !");
+                    System.out.println("Salary cannot be negative!");
                     validType = false;
+                } else {
+                    validType = true;
                 }
-            } catch (InputMismatchException ex) {
-                System.out.println("Invalid,Please Enter The Number");
+            } catch (Exception ex) {
+                System.out.println("Invalid, please enter a number.");
                 validType = false;
             }
 
+            // Schedule
             System.out.print("Enter the schedule time (HH:mm): ");
-            time = scanner.nextLine();
+            time = scanner.nextLine().trim();
             try {
                 schedule = LocalTime.parse(time, formatter);
                 validType = true;
@@ -331,28 +240,29 @@ public class EmployeeManager {
                 System.out.println("Invalid time format! Use HH:mm (e.g. 09:00).");
                 validType = false;
             }
-        } while (validType == false);
-        System.out.println("Update Sucessful !!!");
+        } while (!validType);
+
         tempEmp.setBasicSalary(salary);
         tempEmp.setSchedule(schedule);
-
+        System.out.println("Update successful!");
     }
+
+    // --- UPDATE (salary) ---
     public static void updateSalary() {
-        Scanner sc = scanner;
         System.out.print("Enter employee ID to update salary: ");
-        String id = sc.nextLine().trim();
+        String id = scanner.nextLine().trim();
         if (id.isEmpty()) {
             System.out.println("No ID entered.");
             return;
         }
         updateSalary(id);
     }
+
     public static void updateSalary(String empID) {
         if (empID == null || empID.trim().isEmpty()) {
             updateSalary();
             return;
         }
-
         String id = empID.trim();
         boolean found = false;
 
@@ -361,45 +271,114 @@ public class EmployeeManager {
                 found = true;
                 try {
                     System.out.print("Enter new monthly salary for " + id + ": ");
-                    double newSalary = Double.parseDouble(scanner.nextLine());
+                    double newSalary = Double.parseDouble(scanner.nextLine().trim());
+                    if (newSalary < 0) {
+                        System.out.println("Salary cannot be negative!");
+                        return;
+                    }
                     e.setBasicSalary(newSalary);
-                    e.setMonthlySalary(newSalary);
-
+                    e.setMonthlySalary(newSalary); // keep simple; subclasses may recalc elsewhere
                     System.out.println("Salary updated for " + id + " -> RM " + String.format("%.2f", newSalary));
                 } catch (Exception ex) {
-                    System.out.println("Invalid amount.");
+                    System.out.println("Invalid number.");
                 }
                 break;
             }
         }
-
-    if (!found) {
-        System.out.println("Employee not found: " + id);
-    }
-}
-    public void showEmployeeMenu() {
-    while (true) {
-        System.out.println("\n=== EMPLOYEE MENU ===");
-        System.out.println("1. List employees");
-        System.out.println("2. Add employee");
-        System.out.println("3. Update employee detail");
-        System.out.println("4. Update salary");
-        System.out.println("5. Remove employee");
-        System.out.println("6. Back");
-        System.out.print("Enter choice: ");
-        int choice;
-        try { choice = Integer.parseInt(scanner.nextLine()); }
-        catch (Exception e) { System.out.println("Enter a number."); continue; }
-
-        switch (choice) {
-            case 1: employeeListCheck();
-            case 2: addNewStaff();
-            case 3: updateEmployeeDetail();
-            case 4: updateSalary();
-            case 5: deleteStaff();
-            case 6: { return; }
-            default: System.out.println("Invalid choice.");
+        if (!found) {
+            System.out.println("Employee not found: " + id);
         }
     }
+
+    // --- DELETE ---
+    public static void deleteStaff() {
+        try {
+            employeeList.clear();
+            System.out.print("1.Housekeeping\n2.Desk Staff\n3.Manager\nPlease Enter The Staff Type (1 - 3): ");
+            staffType = Integer.parseInt(scanner.nextLine().trim());
+            if (staffType < 1 || staffType > 3) {
+                System.out.println("Please enter within 1 to 3!");
+                return;
+            }
+        } catch (Exception ex) {
+            System.out.println("Please enter a number!");
+            return;
+        }
+
+        switch (staffType) {
+            case 1:
+                employeeList.addAll(EmployeeManager.getHouseKeeping());
+                break;
+            case 2:
+                employeeList.addAll(EmployeeManager.getDeskStaff());
+                break;
+            case 3:
+                employeeList.addAll(EmployeeManager.getManager());
+                break;
+        }
+
+        for (Employee empl : employeeList) System.out.println(empl);
+        if (employeeList.isEmpty()) {
+            System.out.println("Current employee record is empty!");
+            return;
+        }
+
+        System.out.print("Enter the Staff ID to delete: ");
+        String targetId = scanner.nextLine().trim();
+        boolean removed = false;
+
+        switch (staffType) {
+            case 1:
+                removed = houseKeeping.removeIf(e -> e.getStaffID().equalsIgnoreCase(targetId));
+                break;
+            case 2:
+                removed = deskStaff.removeIf(e -> e.getStaffID().equalsIgnoreCase(targetId));
+                break;
+            case 3:
+                removed = manager.removeIf(e -> e.getStaffID().equalsIgnoreCase(targetId));
+                break;
+        }
+
+        if (removed) {
+            System.out.println("Staff " + targetId + " has been deleted.");
+        } else {
+            System.out.println("Staff not exist.");
+        }
+    }
+
+    // --- MENU (instance method, minimal change; FIXED: add breaks) ---
+    public void showEmployeeMenu() {
+        while (true) {
+            System.out.println(
+                    "\n+----+-------------------------+\n" +
+                    "| NO |        EMPLOYEE         |\n" +
+                    "+----+-------------------------+\n" +
+                    "| 1. | List Employee           |\n" +
+                    "| 2. | Add Employee            |\n" +
+                    "| 3. | Update Employee Detail  |\n" +
+                    "| 4. | Update Salary           |\n" +
+                    "| 5. | Remove Employee         |\n" +
+                    "| 0. | Back                    |\n" +
+                    "+----+-------------------------+\n"
+            );
+            System.out.print("Enter choice: ");
+            int choice;
+            try {
+                choice = Integer.parseInt(scanner.nextLine().trim());
+            } catch (Exception e) {
+                System.out.println("Enter a number.");
+                continue;
+            }
+
+            switch (choice) {
+                case 1: employeeListCheck();      break; // FIX: prevent fall-through
+                case 2: addNewStaff();            break; // FIX
+                case 3: updateEmployeeDetail();   break; // FIX
+                case 4: updateSalary();           break; // FIX
+                case 5: deleteStaff();            break; // FIX
+                case 0: return;
+                default: System.out.println("Invalid choice.");
+            }
+        }
     }
 }

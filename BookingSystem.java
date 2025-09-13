@@ -23,7 +23,7 @@ public class BookingSystem {
             System.out.println("| 3. | Modify Reservation |");
             System.out.println("| 4. | Make Payment       |");
             System.out.println("| 5. | View Payments      |");
-            System.out.println("| 6. | Exit               |");
+            System.out.println("| 0. | Exit               |");
             System.out.println("+----+--------------------+");
             System.out.print("Enter choice (1 - 6): ");
             int choice = scanner.nextInt();
@@ -35,7 +35,7 @@ public class BookingSystem {
                 case 3 : Booking.modifyReservation(scanner, bookings, rooms, payments);break;
                 case 4 : Payment.makePayment(scanner, bookings, payments, paymentCounter++);break;
                 case 5 : Payment.viewPayments(payments);break;
-                case 6 : { System.out.println("Exiting..."); return; }
+                case 0 : { System.out.println("Exiting..."); return; }
                 default : System.out.println("Invalid choice!");
             }
         }
