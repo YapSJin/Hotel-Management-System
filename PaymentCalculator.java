@@ -13,10 +13,8 @@ import java.util.Scanner;
 
 public class PaymentCalculator {
     
-    // Simple placeholder to pause and avoid accidental fall-through read issues
     private void pause(Scanner scanner) {
         System.out.print("Press Enter to continue...");
-        // Ensure any pending newline is consumed first
         if (scanner.hasNextLine()) scanner.nextLine();
         scanner.nextLine();
         System.out.println();
@@ -76,3 +74,4 @@ public class PaymentCalculator {
         }
     }
 }
+
