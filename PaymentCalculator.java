@@ -16,25 +16,19 @@ public class PaymentCalculator {
         Scanner scanner = new Scanner(System.in);
         int choice;
         do {
-            System.out.println("\r\n"+ //
-                                "+----+-------------------------+\r\n"+//
-                                "| NO |   PAYMENT CALCULATION   |\r\n"+//
-                                "+----+-------------------------+\r\n"+//
-                                "| 1. | Show Revenue Summary    |\r\n"+//
-                                "| 0. | Back                    |\r\n"+//
-                                "+----+-------------------------+\r\n"+//
-                                "\r\n"+//
-                                "");
+            System.out.println("\n=== PAYMENT CALCULATION ===");
+            System.out.println("1. Show revenue summary");
+            System.out.println("2. Back");
             System.out.print("Enter choice: ");
             while (!scanner.hasNextInt()) { scanner.next(); System.out.print("Enter number: "); }
             choice = scanner.nextInt();
 
             switch (choice) {
                 case 1:showRevenue(hotel);
-                case 0:System.out.println("Returning...");
+                case 2:System.out.println("Returning...");
                 default: System.out.println("Invalid option.");
             }
-        } while (choice != 0);
+        } while (choice != 2);
     }
 
     private void showRevenue(Hotel hotel) {

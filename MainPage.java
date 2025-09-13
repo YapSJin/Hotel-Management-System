@@ -31,7 +31,7 @@ public class MainPage {
 
             switch (choice) {
                 case 0: {
-                    System.out.println("Goodbye!");
+                    System.out.println("👋 Goodbye!");
                     return;
                 }
                 case 1: { // Admin login
