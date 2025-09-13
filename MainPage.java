@@ -31,21 +31,21 @@ public class MainPage {
 
             switch (choice) {
                 case 0: {
-                    System.out.println("👋 Goodbye!");
+                    System.out.println("Goodbye!");
                     return;
                 }
                 case 1: { // Admin login
                     Security admin = Security.login("admin");
                     if (admin != null) {
-                        adminDashBoard.show(admin);
+                        AdminDashboard adminDashboard = new AdminDashboard(new Hotel());
+                        adminDashboard.showAdminMenu();
                     }
                     break; // Added missing break
                 }
                 case 2: { 
                     Security user = Security.login("user");
                     if (user != null) {
-                        Booking.show(user);
-                    }
+                        BookingSystem.main(new String[]{});                    }
                     break; // Added missing break
                 }
                 case 3: {

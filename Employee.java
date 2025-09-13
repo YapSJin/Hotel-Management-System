@@ -19,7 +19,7 @@ public abstract class Employee{
         
         this.staffID = staffID;
         this.role = role;
-        this.basicSalary = basicSalary;
+        this.basicSalary = BasicSalary;
         this.schedule = schedule;
         
         employeeList.add(this);
