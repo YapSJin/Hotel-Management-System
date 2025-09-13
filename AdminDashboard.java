@@ -17,13 +17,19 @@ public class AdminDashboard {
     public void showAdminMenu() {
     Scanner scanner = new Scanner(System.in);
     int choice;
-    do {
-        System.out.println("\n=== ADMIN DASHBOARD ===");
-        System.out.println("1. Show hotel statistics");
-        System.out.println("2. Payment & charges");
-        System.out.println("3. Manage employees");
-        System.out.println("4. View all accounts");
-        System.out.println("5. Logout");
+    do {    
+        System.out.println("\r\n"+ //
+                                "+----+-------------------------+\r\n"+//
+                                "| NO |     ADMIN DASHBOARD     |\r\n"+//
+                                "+----+-------------------------+\r\n"+//
+                                "| 1. | Show Hotel Statistics   |\r\n"+//
+                                "| 2. | Payment & CHarges       |\r\n"+//
+                                "| 3. | Manage Employees        |\r\n"+//
+                                "| 4. | View All Accounts       |\r\n"+//
+                                "| 0. | Logout                  |\r\n"+//
+                                "+----+-------------------------+\r\n"+//
+                                "\r\n"+//
+                                "");
         System.out.print("Choose an option: ");
 
         while (!scanner.hasNextInt()) {
@@ -45,7 +51,7 @@ public class AdminDashboard {
             case 4:
                 Security.viewAccounts();
                 break;
-            case 5:
+            case 0:
                 System.out.println("Logging out...");
                 return;
             default:

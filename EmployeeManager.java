@@ -379,13 +379,19 @@ public class EmployeeManager {
 }
     public void showEmployeeMenu() {
     while (true) {
-        System.out.println("\n=== EMPLOYEE MENU ===");
-        System.out.println("1. List employees");
-        System.out.println("2. Add employee");
-        System.out.println("3. Update employee detail");
-        System.out.println("4. Update salary");
-        System.out.println("5. Remove employee");
-        System.out.println("6. Back");
+         System.out.println("\r\n"+ //
+                                "+----+-------------------------+\r\n"+//
+                                "| NO |        EMPLOYEE         |\r\n"+//
+                                "+----+-------------------------+\r\n"+//
+                                "| 1. | List Employee           |\r\n"+//
+                                "| 2. | Add Employee            |\r\n"+//
+                                "| 3. | Update Employee Detail  |\r\n"+//
+                                "| 4. | Update Salary           |\r\n"+//
+                                "| 5. | Remove Employee         |\r\n"+//
+                                "| 0. | Back                    |\r\n"+//
+                                "+----+-------------------------+\r\n"+//
+                                "\r\n"+//
+                                "");
         System.out.print("Enter choice: ");
         int choice;
         try { choice = Integer.parseInt(scanner.nextLine()); }
@@ -397,7 +403,7 @@ public class EmployeeManager {
             case 3: updateEmployeeDetail();
             case 4: updateSalary();
             case 5: deleteStaff();
-            case 6: { return; }
+            case 0: { return; }
             default: System.out.println("Invalid choice.");
         }
     }
