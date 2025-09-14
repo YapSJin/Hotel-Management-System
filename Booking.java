@@ -202,10 +202,15 @@ class Booking {
             if (b.getBookingID().equals(bookingID) && b.getStatus().equals("Booked")) {
                 found = true; 
                 System.out.println("Found booking: " + b);
-                System.out.println("1. Change Dates");
-                System.out.println("2. Change Nights");
-                System.out.println("3. Cancel Reservation");
-                System.out.println("4. Exit");
+                System.out.println("\n+----+--------------------+");
+                System.out.println("| NO | Modify Reservation |");
+                System.out.println("+----+--------------------+");
+                System.out.println("| 1. | Change Dates       |");
+                System.out.println("| 2. | Change Nights      |");
+                System.out.println("| 3. | Cancel Reservation |");
+                System.out.println("| 4. | Cancel Payment     |"); 
+                System.out.println("| 5. | Exit               |");
+                System.out.println("+----+--------------------+");
                 System.out.print("Enter choice: ");
                 int opt = scanner.nextInt(); scanner.nextLine();
                 
@@ -246,6 +251,9 @@ class Booking {
                     System.out.println("Reservation cancelled: " + b);
                 }
                 else if (opt == 4) {
+                   Payment.cancelPayment(scanner, payments, bookings);
+                }
+                else if (opt == 5) {
                     return;
                 }
             }
