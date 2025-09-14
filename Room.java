@@ -47,14 +47,15 @@ class Room {
 
     @Override
     public String toString() {
-        return roomID + "    | " + type + " |  RM" + pricePerNight + "  | " + status;
-    }
-    
-        public static void viewRooms(ArrayList<Room> rooms) {
-        System.out.println("\nRoomID  |  Type  |  Price  |  Status ");
-        System.out.println("=======================================");
+    return String.format("| %-6s | %-6s | RM%-5d | %-8s  |", roomID, type, pricePerNight, status);
+}
+    public static void viewRooms(ArrayList<Room> rooms) {
+        System.out.println("\n+--------+--------+---------+------------+");
+        System.out.println("| RoomID | Type   | Price   | Status     |");
+        System.out.println("+--------+--------+---------+------------+");
         for (Room r : rooms) {
-            System.out.println(r);
-        }
+        System.out.println(r);
     }
+    System.out.println("+--------+--------+---------+------------+");
+}
 }
